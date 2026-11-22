@@ -1,4 +1,4 @@
-FROM python:3.10-slim
+FROM python:3.11-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
    PYTHONUNBUFFERED=1
@@ -15,6 +15,8 @@ RUN apt-get update && \
 
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
+# pip's bundled inventory lists a build-time setuptools version that is not installed.
+RUN rm /usr/local/lib/python3.11/site-packages/pip/_vendor/bom.cdx.json
 
 COPY . .
 RUN chown -R appuser:appgroup /app

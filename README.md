@@ -21,7 +21,7 @@ The Pydantic `CalculationCreate` schema accepts `a`, `b`, and `type` (`add`, `su
 
 ## Requirements
 
-- Python 3.10 or later
+- Python 3.11 or later
 - For end-to-end tests: Chromium, installed through Playwright
 - Optional for the Docker Compose setup: Docker with the Compose plugin
 
