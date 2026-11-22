@@ -15,6 +15,8 @@ The database models and schemas are not currently connected to the arithmetic AP
 
 The SQLAlchemy `Calculation` model stores `id`, the owning user's foreign-key `user_id`, operands `a` and `b`, and the operation `type`. Its `result` property computes the answer on demand rather than storing it in the database.
 
+The Pydantic `CalculationCreate` schema accepts `a`, `b`, and `type` (`add`, `sub`, `multiply`, or `divide`). `CalculationRead` returns the calculation fields along with its computed result.
+
 ## Requirements
 
 - Python 3.10 or later

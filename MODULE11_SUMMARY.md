@@ -35,9 +35,9 @@ calculations = session.query(Calculation).all()
 **Schemas Created:**
 - `CalculationType` - Enum for valid calculation types
 - `CalculationBase` - Base schema with common fields
-- `CalculationCreate` - For creating calculations (includes user_id)
+- `CalculationCreate` - For creating calculations (accepts `a`, `b`, and `type`)
 - `CalculationUpdate` - For updating calculations (all fields optional)
-- `CalculationResponse` - For reading calculations (includes computed fields)
+- `CalculationRead` - For reading calculations (includes computed fields)
 
 **Validation Features:**
 - Field validators for type normalization

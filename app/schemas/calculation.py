@@ -21,8 +21,19 @@ class CalculationType(str, Enum):
     DIVISION = "division"
 
 
+_TYPE_ALIASES = {
+    "add": CalculationType.ADDITION.value,
+    "sub": CalculationType.SUBTRACTION.value,
+    "multiply": CalculationType.MULTIPLICATION.value,
+    "divide": CalculationType.DIVISION.value,
+}
+
+
 class CalculationBase(BaseModel):
-    type: CalculationType = Field(..., description="Calculation operation")
+    type: CalculationType = Field(
+        ...,
+        description="Operation: add, sub, multiply, or divide",
+    )
     a: float = Field(..., description="First operand")
     b: float = Field(..., description="Second operand")
 
@@ -30,11 +41,17 @@ class CalculationBase(BaseModel):
     @classmethod
     def normalize_type(cls, value):
         allowed_types = {calculation_type.value for calculation_type in CalculationType}
-        if not isinstance(value, str) or value.lower() not in allowed_types:
+        if not isinstance(value, str):
             raise ValueError(
-                f"Type must be one of: {', '.join(sorted(allowed_types))}"
+                "Type must be one of: add, sub, multiply, divide"
             )
-        return value.lower()
+        normalized = value.strip().lower()
+        normalized = _TYPE_ALIASES.get(normalized, normalized)
+        if normalized not in allowed_types:
+            raise ValueError(
+                "Type must be one of: add, sub, multiply, divide"
+            )
+        return normalized
 
     @model_validator(mode="after")
     def validate_division(self) -> "CalculationBase":
@@ -54,7 +71,7 @@ class CalculationBase(BaseModel):
 
 
 class CalculationCreate(CalculationBase):
-    user_id: UUID = Field(..., description="UUID of the owning user")
+    """Request schema for creating a calculation."""
 
 
 class CalculationUpdate(BaseModel):
@@ -64,7 +81,9 @@ class CalculationUpdate(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
-class CalculationResponse(CalculationBase):
+class CalculationRead(CalculationBase):
+    """Response schema for a calculation, including its computed result."""
+
     id: UUID
     user_id: UUID
     created_at: datetime
@@ -72,3 +91,6 @@ class CalculationResponse(CalculationBase):
     result: float = Field(..., description="Computed result")
 
     model_config = ConfigDict(from_attributes=True)
+
+
+CalculationResponse = CalculationRead
