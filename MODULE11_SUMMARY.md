@@ -2,7 +2,7 @@
 
 ## Summary
 
-Successfully reconstructed Module 11 with **SQLAlchemy polymorphic inheritance** for calculations and comprehensive Pydantic schemas for validation. All tests pass with 93% code coverage.
+The module uses **SQLAlchemy polymorphic inheritance** for binary calculations and Pydantic schemas for validation. Calculation results are computed on demand rather than stored.
 
 ## What Was Added
 
@@ -14,13 +14,16 @@ Successfully reconstructed Module 11 with **SQLAlchemy polymorphic inheritance**
 - **Discriminator Column:** `type` - determines which subclass to instantiate
 - **Factory Method:** `Calculation.create()` - returns appropriate subclass
 - **Polymorphic Behavior:** Each subclass implements `get_result()` differently
+- **Operands:** `a` and `b` are stored as floating-point columns
+- **Ownership:** `user_id` is a foreign key to `users.id`
+- **Result:** Computed on demand; it is not a database column
 
 **Key Features:**
 ```python
 # Factory creates correct subclass
-calc = Calculation.create('addition', user_id, [1, 2, 3])
+calc = Calculation.create('addition', user_id, 1, 2)
 assert isinstance(calc, Addition)
-assert calc.get_result() == 6
+assert calc.result == 3
 
 # Polymorphic query returns mixed types
 calculations = session.query(Calculation).all()
@@ -39,8 +42,8 @@ calculations = session.query(Calculation).all()
 **Validation Features:**
 - Field validators for type normalization
 - Model validators for cross-field validation
-- Division by zero prevention (LBYL approach)
-- Minimum 2 inputs requirement
+- Division-by-zero prevention for a zero divisor
+- Validation for the two numeric operands
 - Clear error messages for invalid data
 
 ### 3. Database Configuration
@@ -51,19 +54,11 @@ calculations = session.query(Calculation).all()
 
 ### 4. Comprehensive Tests
 
-**Polymorphic Model Tests (19 tests):**
-- Individual operation tests (addition, subtraction, etc.)
-- Factory pattern tests (verifies correct subclass creation)
-- Polymorphic behavior tests (list of mixed types, type-specific methods)
-- Edge case validation (invalid inputs, division by zero)
-
-**Schema Validation Tests (23 tests):**
-- Valid data acceptance
-- Invalid data rejection
-- Type validation and normalization
-- Division by zero validation
-- Cross-field validation
-- Edge cases (empty inputs, large numbers, negative numbers)
+**Model and schema tests cover:**
+- Each binary operation and the polymorphic factory
+- Computed-on-demand results and division-by-zero handling
+- The `user_id` foreign-key target
+- Type validation, UUID validation, and response-schema conversion
 
 **API Integration Tests (5 existing tests):**
 - FastAPI endpoint tests still passing
@@ -76,15 +71,10 @@ calculations = session.query(Calculation).all()
 4. **Common Interface, Different Behavior:** All have `get_result()`, each implements differently
 5. **Type Safety:** `isinstance()` checks work correctly for subclasses
 
-## Tests Results
+## Focused Test Results
 
 ```
-✓ 19 polymorphic model tests PASSED
-✓ 23 Pydantic schema tests PASSED  
-✓ 5 FastAPI integration tests PASSED
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Total: 47 tests PASSED
-Coverage: 93%
+✓ 18 model and schema tests PASSED
 ```
 
 ## Key Design Patterns Demonstrated
@@ -95,23 +85,12 @@ Coverage: 93%
 4. **Data Transfer Objects** - Pydantic schemas as DTOs
 5. **Dependency Injection** - `get_db()` for database sessions
 
-## LBYL vs EAFP Examples
+## Division-by-Zero Validation
 
-**LBYL (Look Before You Leap) - In Schemas:**
+The schema and calculation model both reject division by zero before returning a result:
 ```python
-# Check for division by zero BEFORE operation
-if self.type == CalculationType.DIVISION:
-    if any(x == 0 for x in self.inputs[1:]):
-        raise ValueError("Cannot divide by zero")
-```
-
-**EAFP (Easier to Ask Forgiveness than Permission) - In Models:**
-```python
-# Attempt division, catch error if it happens
-for value in self.inputs[1:]:
-    if value == 0:
-        raise ValueError("Cannot divide by zero.")
-    result /= value
+if self.type == CalculationType.DIVISION and self.b == 0:
+    raise ValueError("Cannot divide by zero")
 ```
 
 ## Module Alignment
@@ -120,9 +99,9 @@ This implementation perfectly aligns with Module 11 requirements:
 - ✅ Calculation model with SQLAlchemy
 - ✅ Pydantic schemas for validation
 - ✅ Factory pattern for calculation types
-- ✅ Comprehensive testing (no database routes yet)
+- ✅ Focused model and schema tests
+- ✅ No database CRUD routes yet
 - ✅ Polymorphic relationships demonstrated
-- ✅ CI/CD ready (all tests pass)
 
 ## Next Steps (Module 12)
 

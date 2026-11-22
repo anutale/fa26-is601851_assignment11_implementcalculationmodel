@@ -13,6 +13,8 @@ A small FastAPI calculator project with a browser-based interface, arithmetic AP
 
 The database models and schemas are not currently connected to the arithmetic API routes; calculations submitted to `/add`, `/subtract`, `/multiply`, and `/divide` are not stored.
 
+The SQLAlchemy `Calculation` model stores `id`, the owning user's foreign-key `user_id`, operands `a` and `b`, and the operation `type`. Its `result` property computes the answer on demand rather than storing it in the database.
+
 ## Requirements
 
 - Python 3.10 or later
