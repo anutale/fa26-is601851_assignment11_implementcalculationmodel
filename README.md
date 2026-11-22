@@ -17,6 +17,8 @@ The SQLAlchemy `Calculation` model stores `id`, the owning user's foreign-key `u
 
 The Pydantic `CalculationCreate` schema accepts `a`, `b`, and `type` (`add`, `sub`, `multiply`, or `divide`). `CalculationRead` returns the calculation fields along with its computed result.
 
+`Calculation.create()` is a factory method that accepts those short names (or the full operation names) and creates the matching polymorphic SQLAlchemy model.
+
 ## Requirements
 
 - Python 3.10 or later

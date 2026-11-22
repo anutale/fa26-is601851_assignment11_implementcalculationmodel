@@ -49,6 +49,10 @@ def test_division_by_zero_raises_value_error():
 @pytest.mark.parametrize(
     ("calculation_type", "calculation_class", "expected"),
     [
+        ("Add", Addition, 7),
+        ("Sub", Subtraction, 3),
+        ("Multiply", Multiplication, 10),
+        ("Divide", Division, 2.5),
         ("addition", Addition, 7),
         ("subtraction", Subtraction, 3),
         ("multiplication", Multiplication, 10),

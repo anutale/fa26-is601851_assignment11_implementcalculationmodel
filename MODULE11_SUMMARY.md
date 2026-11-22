@@ -21,7 +21,7 @@ The module uses **SQLAlchemy polymorphic inheritance** for binary calculations a
 **Key Features:**
 ```python
 # Factory creates correct subclass
-calc = Calculation.create('addition', user_id, 1, 2)
+calc = Calculation.create('add', user_id, 1, 2)
 assert isinstance(calc, Addition)
 assert calc.result == 3
 

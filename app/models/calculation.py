@@ -78,12 +78,17 @@ class AbstractCalculation:
         b: float,
     ) -> "Calculation":
         calculation_classes = {
+            "add": Addition,
             "addition": Addition,
+            "sub": Subtraction,
             "subtraction": Subtraction,
+            "multiply": Multiplication,
             "multiplication": Multiplication,
+            "divide": Division,
             "division": Division,
         }
-        calculation_class = calculation_classes.get(calculation_type.lower())
+        normalized_type = calculation_type.strip().lower()
+        calculation_class = calculation_classes.get(normalized_type)
         if calculation_class is None:
             raise ValueError(f"Unsupported calculation type: {calculation_type}")
         return calculation_class(user_id=user_id, a=a, b=b)
