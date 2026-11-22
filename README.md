@@ -80,17 +80,17 @@ Division by zero returns HTTP `400` with an `error` field:
 Run the unit and integration tests:
 
 ```bash
-pytest tests/unit tests/integration
+python -m pytest tests/unit tests/integration
 ```
 
 The end-to-end tests launch the app and use Playwright Chromium:
 
 ```bash
 python -m playwright install chromium
-pytest tests/e2e
+python -m pytest tests/e2e
 ```
 
-To run all tests, including end-to-end tests, use `pytest` after installing Chromium.
+Run these commands after activating the project virtual environment. Using `python -m pytest` ensures pytest uses the same interpreter where the requirements were installed. To run all tests, including end-to-end tests, use `python -m pytest` after installing Chromium.
 
 ## Docker Compose
 
